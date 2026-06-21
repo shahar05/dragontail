@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  mode: release
+
+database:
+  host: postgres
+  port: 5432
+  name: kfc_forecast
+  user: kfc_user
+  password: kfc_password
+  sslmode: disable
+
+forecast:
+  # Cron expression for daily forecast generation (default: midnight daily)
+  schedule: "0 0 * * *"
+  # Number of weeks of historical data to use for averaging
+  history_weeks: 4
