@@ -1,0 +1,27 @@
+{
+  "name": "kfc-forecast-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "axios": "^1.16.0",
+    "date-fns": "^3.3.1",
+    "react": "^18.2.0",
+    "react-datepicker": "^8.8.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.12.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^6.4.3"
+  }
+}
