@@ -42,10 +42,11 @@ func (d DatabaseConfig) DSN() string {
 }
 
 func Load(configPath string) (*Config, error) {
-	viper.SetConfigFile(configPath)
-	viper.AutomaticEnv()
+	viper.SetConfigFile(configPath) // set file path (e.g., config.yaml)
+	viper.AutomaticEnv() // prefer environment variables over config file values
 
-	_ = viper.BindEnv("database.host", "DB_HOST")
+    // Bind environment variables to config fields
+	_ = viper.BindEnv("database.host", "DB_HOST") 
 	_ = viper.BindEnv("database.port", "DB_PORT")
 	_ = viper.BindEnv("database.name", "DB_NAME")
 	_ = viper.BindEnv("database.user", "DB_USER")
@@ -56,7 +57,7 @@ func Load(configPath string) (*Config, error) {
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
 
-	var cfg Config
+	var cfg Config // Populate the Config struct with values from Viper
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}

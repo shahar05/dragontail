@@ -25,7 +25,7 @@ func main() {
 		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	gin.SetMode(cfg.Server.Mode)
+	gin.SetMode(cfg.Server.Mode) // Release mode for production, debug mode for development
 
 	db, err := database.Connect(cfg.Database.DSN())
 	if err != nil {
