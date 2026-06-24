@@ -111,8 +111,9 @@ func (r *Repository) GetAvailableForecastDates(storeID int) ([]string, error) {
 	return dates, rows.Err()
 }
 
-func (r *Repository) GetHistoricalAverages(storeID, productID, dayOfWeek, hour int, weeksBack int) (float64, error) {
+func (r *Repository) GetHistoricalAverages(storeID, productID, dayOfWeek, hour, weeksBack int) (float64, error) {
 	var avg sql.NullFloat64
+    // Query the database to calculate the average quantity sold for the given store, product, day of the week, and hour over the specified number of weeks back
 	err := r.db.QueryRow(`
 		SELECT AVG(quantity)
 		FROM sales_history
@@ -120,7 +121,7 @@ func (r *Repository) GetHistoricalAverages(storeID, productID, dayOfWeek, hour i
 		  AND product_id = $2
 		  AND EXTRACT(DOW FROM sale_date) = $3
 		  AND sale_hour = $4
-		  AND sale_date >= CURRENT_DATE - ($5 * 7)
+		  AND sale_date >= CURRENT_DATE - ($5 * 7) 
 	`, storeID, productID, dayOfWeek, hour, weeksBack).Scan(&avg)
 	if err != nil {
 		return 0, err

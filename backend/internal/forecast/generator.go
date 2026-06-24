@@ -27,7 +27,7 @@ func (g *Generator) Start(schedule string) error {
 	g.scheduler = cron.New()
 	_, err := g.scheduler.AddFunc(schedule, func() {
 		log.Println("Running scheduled forecast generation...")
-		if err := g.GenerateForDate(time.Now().AddDate(0, 0, 1)); err != nil {
+		if err := g.GenerateForDate(time.Now().AddDate(0, 0, 1)); err != nil { // Generate forecast for the next day
 			log.Printf("Forecast generation error: %v", err)
 		}
 	})
@@ -41,29 +41,30 @@ func (g *Generator) Start(schedule string) error {
 
 func (g *Generator) Stop() {
 	if g.scheduler != nil {
-		ctx := g.scheduler.Stop()
-		<-ctx.Done()
+		ctx := g.scheduler.Stop() // Wait for all running jobs to finish
+		<-ctx.Done() // channel will be closed when all jobs are done
+        log.Println("Forecast scheduler stopped.")
 	}
 }
 
 func (g *Generator) GenerateForDate(date time.Time) error {
-	targetDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
-	dayOfWeek := int(targetDate.Weekday())
+	targetDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC) // Normalize to midnight UTC
+	dayOfWeek := int(targetDate.Weekday()) // 0=Sunday, 1=Monday, ..., 6=Saturday   
 
-	storeIDs, err := g.repo.GetAllStoreIDs()
+	storeIDs, err := g.repo.GetAllStoreIDs() // Fetch all store IDs from the repository
 	if err != nil {
 		return fmt.Errorf("failed to get stores: %w", err)
 	}
 
-	productIDs, err := g.repo.GetAllProductIDs()
+	productIDs, err := g.repo.GetAllProductIDs() // Fetch all product IDs from the repository
 	if err != nil {
 		return fmt.Errorf("failed to get products: %w", err)
 	}
 
 	count := 0
-	for _, storeID := range storeIDs {
-		for _, productID := range productIDs {
-			for hour := 0; hour < 24; hour++ {
+	for _, storeID := range storeIDs { // Iterate over each store
+		for _, productID := range productIDs { // Iterate over each product
+			for hour := 0; hour < 24; hour++ { // Iterate over each hour of the day
 				avg, err := g.repo.GetHistoricalAverages(storeID, productID, dayOfWeek, hour, g.historyWeeks)
 				if err != nil {
 					log.Printf("Warning: failed to get avg for store=%d product=%d hour=%d: %v", storeID, productID, hour, err)

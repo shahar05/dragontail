@@ -40,7 +40,7 @@ func main() {
 		log.Printf("Warning: initial forecast generation failed: %v", err)
 	}
 
-	if err := gen.Start(cfg.Forecast.Schedule); err != nil {
+	if err := gen.Start(cfg.Forecast.Schedule); err != nil { // Start the forecast scheduler (e.g., "0 0 * * *" for daily at midnight)
 		log.Printf("Warning: failed to start forecast scheduler: %v", err)
 	}
 	defer gen.Stop()
